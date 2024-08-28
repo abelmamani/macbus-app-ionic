@@ -1,0 +1,27 @@
+<ion-header class="no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Lineas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item *ngFor="let item of busRoutes">
+      <ion-avatar slot="start">
+        <ion-icon name="bus-outline" color="dark" size="large"></ion-icon>
+      </ion-avatar>
+      <ion-label class="scrolling-text">
+        <h2>
+          <span>{{item.shortName}}</span>
+          <span class="marquee">{{item.longName}}</span>
+        </h2>
+      </ion-label>
+      <ion-button shape="round" fill="clear" (click)="openBusRouteMap(item.longName)">
+        <ion-icon name="search-outline" color="dark"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

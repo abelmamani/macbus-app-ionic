@@ -1,0 +1,31 @@
+<ion-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-toolbar>
+    <ion-title class="title">Macbus</ion-title>
+  </ion-toolbar>
+  <div class="ion-padding-vertical">
+    <ion-row>
+      <ion-col size="6" *ngFor="let option of navOptions">
+          <div class="button-inner">
+            <ion-button expand="block" fill="solid" color="dark" shape="round" size="large" [routerLink]="'/'+[option.url]">
+              <ion-icon name={{option.icon}}></ion-icon>
+            </ion-button>
+            <ion-label>{{option.title}}</ion-label>
+          </div>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <ion-list lines="full">
+    <ion-list-header>Recientes</ion-list-header>
+    <ion-item *ngFor="let search of recentSearches">
+      <ion-icon name="location-outline" slot="start" color="dark"></ion-icon>
+      <ion-label>
+        <h3>{{ search.name }}</h3>
+        <p>{{ search.time }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
