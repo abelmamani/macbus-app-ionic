@@ -5,6 +5,11 @@
   font-size: 2rem;
 }
 
+.nav-options{
+  display: flex;
+  justify-content: space-around;
+}
+
 .button-inner {
     display: flex;
     flex-direction: column;

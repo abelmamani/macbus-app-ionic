@@ -35,9 +35,7 @@ export class BusRoutePage implements OnInit{
       component: BusRouteDetailPage,
       componentProps: {
         busRouteName: busRouteName
-      },
-      initialBreakpoint: 1,
-      breakpoints: [0, 1],
+      }
     });
     return await modal.present();
   }

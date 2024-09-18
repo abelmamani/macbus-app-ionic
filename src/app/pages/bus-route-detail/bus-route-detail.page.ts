@@ -3,8 +3,8 @@ import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import * as L from 'leaflet';
-import { StopSequence } from '../bus-route/models/stop.sequence.model';
 import { Shape } from '../bus-route/models/shape.model';
+import { StopSequence } from '../bus-route/models/stop.sequence.model';
 import { BusRouteService } from '../bus-route/services/bus-route.service';
 
 @Component({
@@ -20,12 +20,8 @@ export class BusRouteDetailPage {
   private map!: L.Map;
   private shapes: Shape[] = [];
   private stopSequences: StopSequence[] = [];
-  private markerStopSequences: Map<string, L.Marker> = new Map();
+  private markerStopSequences: Map<string, L.CircleMarker> = new Map();
   private defaultLocation: [number, number] = [-29.300575, -67.504712];
-  busStopIcon = L.icon({
-    iconUrl: 'assets/img/placeholder.png',
-    iconAnchor: [16, 32],
-  });
 
   constructor(private busRoutervice: BusRouteService, private modalController: ModalController) { }
 
@@ -85,9 +81,13 @@ export class BusRouteDetailPage {
         setTimeout(() => {
           const stopId: string = ss.stop.id;
           if (!this.markerStopSequences.has(stopId)) {
-            const marker = L.marker([ss.stop.latitude, ss.stop.longitude], { icon: this.busStopIcon })
-              .addTo(this.map)
-              .bindPopup(`<b>${ss.stop.name}</b>`);
+            const marker = L.circleMarker([ss.stop.latitude, ss.stop.longitude], {
+              radius: 10,
+              color: '#000000',
+              fillColor: 'blue',
+              fillOpacity: 0.6,
+              weight: 2
+            }).addTo(this.map).bindPopup(`<b>${ss.stop.name}</b>`);
             marker.openPopup();
             this.markerStopSequences.set(stopId, marker);
           } else {
@@ -102,7 +102,7 @@ export class BusRouteDetailPage {
   }
   
 
-  dismiss() {
+  closeModal() {
     this.modalController.dismiss();
   }
 
