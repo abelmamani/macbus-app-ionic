@@ -1,13 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 .title {
   font-family: 'Roboto', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
   font-size: 2rem;
 }
 
 .nav-options{
   display: flex;
   justify-content: space-around;
+  padding: 15px 0;
 }
 
 .button-inner {

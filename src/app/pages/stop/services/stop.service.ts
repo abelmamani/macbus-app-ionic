@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment.prod';
 import { Stop } from '../models/stop.model';
 import { StopTime } from '../models/StopTime.model';
 
@@ -9,7 +8,8 @@ import { StopTime } from '../models/StopTime.model';
   providedIn: 'root'
 })
 export class StopService {
-  private apiUrl = environment.apiUrl+"/stops";
+  private apiUrl = "https://macbus-api-rest.vercel.app/api/stops";
+  //private apiUrl = "http://localhost:3000/api/stops";
   constructor(private http: HttpClient) {}
   getStops():Observable<Stop[]>{
     return this.http.get<Stop[]>(this.apiUrl);

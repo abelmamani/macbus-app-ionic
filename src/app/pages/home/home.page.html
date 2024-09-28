@@ -3,7 +3,7 @@
 
 <ion-content class="ion-padding">
   <ion-toolbar>
-    <ion-title class="title">Macbus</ion-title>
+    <ion-title class="title" (click)="openMenu()">Macbus</ion-title>
   </ion-toolbar>
   <div class="nav-options">
     <div class="button-inner" *ngFor="let option of navOptions">
@@ -15,11 +15,11 @@
   </div>
   <ion-list lines="full">
     <ion-list-header>Recientes</ion-list-header>
-    <ion-item *ngFor="let search of recentSearches">
+    <ion-item *ngFor="let item of recentStops$ | async">
       <ion-icon name="location-outline" slot="start" color="dark"></ion-icon>
       <ion-label>
-        <h3>{{ search.name }}</h3>
-        <p>{{ search.time }}</p>
+        <h3>{{ item.name }}</h3>
+        <p>{{ getTimeAgo(item.timestamp)}}</p>
       </ion-label>
     </ion-item>
   </ion-list>

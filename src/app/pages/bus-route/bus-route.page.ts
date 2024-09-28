@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { IonAvatar, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonTitle, IonToolbar, ModalController, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, busOutline, searchOutline } from 'ionicons/icons';
 import { BusRouteDetailPage } from '../bus-route-detail/bus-route-detail.page';
@@ -11,11 +11,12 @@ import { BusRouteService } from './services/bus-route.service';
   templateUrl: './bus-route.page.html',
   styleUrls: ['./bus-route.page.scss'],
   standalone: true,
-  imports: [CommonModule,IonicModule]})
+  imports: [CommonModule, IonHeader, IonContent, IonButton, IonIcon, IonButton, IonToolbar, IonTitle, IonButtons, IonList, IonItem, IonAvatar, IonBackButton, IonLabel]
+})
     
 export class BusRoutePage implements OnInit{
   busRoutes: BusRoute[] = [];
-  constructor(private busRouteService: BusRouteService, private modalController: ModalController) {
+  constructor(private busRouteService: BusRouteService, private modalController: ModalController, private toastController: ToastController) {
     addIcons({arrowBackOutline, busOutline, searchOutline});
   }
   ngOnInit(): void {
@@ -26,7 +27,7 @@ export class BusRoutePage implements OnInit{
       next: (res: BusRoute[]) => {
         this.busRoutes = res;
       },
-      error: (err) => {console.log(err);}
+      error: (err) => {this.showToast("No se pudo obtener las lineas");}
     });
   }
 
@@ -38,5 +39,14 @@ export class BusRoutePage implements OnInit{
       }
     });
     return await modal.present();
+  }
+
+  async showToast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1500,
+      position: 'bottom',
+    });
+    await toast.present();
   }
 }

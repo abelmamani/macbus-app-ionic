@@ -2,9 +2,14 @@ import { Routes } from '@angular/router';
 import { PublicRoute } from './models/routes.model';
 
 export const routes: Routes = [
+  {path: '', redirectTo: PublicRoute.HOME, pathMatch: 'full'},
   {
-    path: 'home',
-    loadComponent: () => import('./pages/home/home.page').then((m) => m.HomePage),
+    path: PublicRoute.HOME,
+    loadComponent: () => import('./pages/home/home.page').then( m => m.HomePage),
+  },
+  {
+    path: PublicRoute.LOGIN,
+    loadComponent: () => import('./pages/login/login.page').then( m => m.LoginPage)
   },
   {
     path: PublicRoute.BUS_ROUTES,
@@ -14,13 +19,4 @@ export const routes: Routes = [
     path: PublicRoute.BUS_STOPS,
     loadComponent: () => import('./pages/stop/stop.page').then( m => m.StopPage)
   },
-  {
-    path: 'bus-route-detail',
-    loadComponent: () => import('./pages/bus-route-detail/bus-route-detail.page').then( m => m.BusRouteDetailPage)
-  },
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full',
-  }
 ];

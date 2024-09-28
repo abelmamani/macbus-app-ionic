@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ stopName  + " "+stopTimes.length}}</ion-title>
+    <p>{{stopName}}</p>
     <ion-buttons slot="end">
-      <ion-button (click)="closeModal()">Close</ion-button>
+      <ion-button (click)="closeModal()">Cerrar</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -10,13 +10,14 @@
 <ion-content>
   <ion-list>
     <ion-item *ngFor="let st of stopTimes">
-      <ion-avatar slot="start">
-        <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
-      </ion-avatar>
-      <ion-label>
-        <h2>{{st.route}}</h2>
-        <p>{{st.arrivalTime}}</p>
+      <ion-label class="item">
+       <div>
+        <div>Linea {{st.route}} </div>
+        <div><span *ngIf="st.headsign !== 'FINALIZANDO' && st.headsign !== 'FIN'">a</span> {{st.headsign}}</div>
+       </div>
+        <div>{{st.arrivalTime}}</div>
       </ion-label>
+     
     </ion-item>
   </ion-list>
   <div *ngIf="stopTimes.length === 0">

@@ -15,7 +15,7 @@ dependencies {
     implementation project(':capacitor-keyboard')
     implementation project(':capacitor-status-bar')
     implementation project(':capacitor-native-settings')
-
+    implementation "com.google.android.gms:play-services-location:16.+"
 }
 
 
