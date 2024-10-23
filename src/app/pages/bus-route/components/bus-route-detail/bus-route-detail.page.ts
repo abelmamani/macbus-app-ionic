@@ -5,9 +5,9 @@ import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
 import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, ModalController, ToastController } from '@ionic/angular/standalone';
 import * as L from 'leaflet';
-import { Shape } from '../bus-route/models/shape.model';
-import { StopSequence } from '../bus-route/models/stop.sequence.model';
-import { BusRouteService } from '../bus-route/services/bus-route.service';
+import { Shape } from '../../models/shape.model';
+import { StopSequence } from '../../models/stop.sequence.model';
+import { BusRouteService } from '../../services/bus-route.service';
 
 @Component({
   selector: 'app-bus-route-detail',

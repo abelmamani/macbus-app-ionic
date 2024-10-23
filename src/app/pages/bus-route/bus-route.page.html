@@ -1,25 +1,29 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Lineas</ion-title>
+    <ion-title class="title">Lineas de colectivos</ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-
-<ion-content class="ion-padding">
-  <ion-list>
-    <ion-item *ngFor="let item of busRoutes">
-      <ion-avatar>
-        <ion-icon name="bus-outline" color="dark" size="small"></ion-icon>
-      </ion-avatar>
-      <ion-label class="scrolling-text">
-        <h2><span>{{item.shortName}}</span> {{item.longName}}</h2>
-      </ion-label>
-      <ion-button shape="round" fill="clear" (click)="openBusRouteMap(item.longName)">
-        <ion-icon name="search-outline" color="dark" size="small"></ion-icon>
-      </ion-button>
-    </ion-item>
+<ion-content>
+  <ion-list class="list">
+    <ion-card class="card" *ngFor="let item of busRoutes">
+        <ion-label>
+          <span> <ion-icon name="bus-outline" color="dark" class="bus"></ion-icon></span>
+        </ion-label>
+        <ion-label>
+          <span>{{item.longName}}</span>
+        </ion-label>
+          <ion-item>
+            <ion-button  shape="round" fill="clear" (click)="getTrips(item.longName)">
+              <ion-icon name="time-outline" color="dark" size="small"></ion-icon>
+            </ion-button>
+            <ion-button shape="round" fill="clear" (click)="openBusRouteMap(item.longName)">
+              <ion-icon name="search-outline" color="dark" size="small"></ion-icon>
+            </ion-button>
+          </ion-item>
+    </ion-card>
   </ion-list>
 </ion-content>

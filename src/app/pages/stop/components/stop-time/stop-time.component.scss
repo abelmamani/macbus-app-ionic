@@ -2,3 +2,13 @@
     display: flex;
     justify-content: space-between;
 }
+.list{
+    overflow-y: scroll;
+}
+
+.card{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 10px;
+}

@@ -1,0 +1,80 @@
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+  }
+
+  .back-button ion-button {
+    --color: white;
+  }
+  .back-button ion-icon {
+    font-weight: bold; 
+    font-size: 24px; 
+  }
+
+  ion-card-header{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .logo{
+    margin-top: 20vh;
+  }
+  .title {
+    text-align: center;
+    font-size: 64px;
+    font-weight: bold;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 24px;
+    color: black;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  ion-list{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  
+  ion-note {
+    margin-left: 16px;
+    font-size: 12px;
+  }
+
+  .btn {
+    --background: black; 
+    --color: white;
+    --border-radius: 8px; 
+    --padding-top: 12px;
+  --padding-bottom: 12px; 
+    font-weight: bold; 
+    font-size: 16px; 
+    letter-spacing: 1px; 
+    transition: background 0.3s ease;
+  }
+  
+  .btn:hover {
+    --background: #333; 
+  }
+  .wave-top {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+  }
+  
+  .wave-bottom {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+  }

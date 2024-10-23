@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonAvatar, IonButton, IonButtons, IonCard, IonCardContent, IonCardTitle, IonContent, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonTitle, IonToolbar, ModalController, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { locationOutline, timeOutline } from 'ionicons/icons';
+import { busOutline, location, timeOutline } from 'ionicons/icons';
 import { StopHistoryService } from 'src/app/services/stop.history.service';
 import { StopTime } from '../../models/StopTime.model';
 import { StopService } from '../../services/stop.service';
@@ -20,7 +20,7 @@ export class StopTimeComponent  implements OnInit {
   constructor(private stopService: StopService, private stopHistoryService: StopHistoryService,  private modalController: ModalController, private toastController: ToastController) { }
 
   ngOnInit() {
-    addIcons({timeOutline, locationOutline});
+    addIcons({timeOutline, location, busOutline});
     this.getStopTimes();
   }
 

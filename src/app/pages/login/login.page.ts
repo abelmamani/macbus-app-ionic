@@ -2,7 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonNote, NavController, ToastController } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { arrowBackOutline } from 'ionicons/icons';
 import { ResponseAuth } from 'src/app/models/response.auth.model';
 import { PublicRoute } from 'src/app/models/routes.model';
 import { AuthService } from 'src/app/services/auth.service';
@@ -12,14 +14,16 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, ReactiveFormsModule, RouterLink]
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, IonHeader, IonContent, IonButton, IonIcon, IonCard, IonCardContent,IonCardHeader, IonCardSubtitle, IonCardTitle, IonList, IonItem, IonInput, IonLabel, IonNote]
 })
 export class LoginPage implements OnInit {
   loginForm: FormGroup = this.formBuilder.group({
     email: [undefined, [Validators.required, Validators.email]],
     password: [undefined, Validators.required]
   });
-  constructor(private authService: AuthService, private formBuilder: FormBuilder, private router: Router) { }
+  constructor(private authService: AuthService, private formBuilder: FormBuilder, private router: Router, private navCtrl: NavController, private toastController: ToastController) {
+    addIcons({arrowBackOutline});
+  }
 
   ngOnInit() {
     this.loginForm.untouched;
@@ -32,11 +36,24 @@ export class LoginPage implements OnInit {
           this.router.navigate([PublicRoute.HOME]);
         },
         error: ( err ) => {
-          console.log(err.error.message ? err.error.message : "error al hacer login");
+          this.showToast(err.error.message ? err.error.message : "Ocurrio un problema al iniciar session, intentelo mas tarde!");
         }
       });
     }else{
       this.loginForm.touched;
     }
+  }
+
+  goBack() {
+    this.navCtrl.back();
+  }
+
+  async showToast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1500,
+      position: 'bottom',
+    });
+    await toast.present();
   }
 }

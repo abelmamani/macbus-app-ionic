@@ -1,33 +1,66 @@
-
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/"></ion-back-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-<ion-content [fullscreen]="true">
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Login</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list [formGroup]="loginForm">
-        <ion-item>
-          <ion-input label="Email" labelPlacement="floating" placeholder="Email" formControlName="email"/>
-          <div *ngIf="loginForm.controls['email'].errors?.['required']">El email es requerido</div>
-          <div *ngIf="loginForm.controls['email'].hasError('email')">El email es invalido</div>
-        </ion-item>
-        <ion-item>
-          <ion-input label="Contraseña" labelPlacement="floating" placeholder="*****" formControlName="password"/>
-          <div *ngIf="loginForm.controls['password'].errors?.['required']">La contraseña es requerido</div>
-        </ion-item>
-        <ion-item>
-          <ion-button (click)="onSubmit()" size="large">Enviar</ion-button>
-          <ion-button [routerLink]="['/register']" size="large">Registrarse</ion-button>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+<ion-header></ion-header>
+<ion-content [fullscreen]="true" padding class="vertical-center">
+  <div class="container">
+    <img src="assets/img/wave-top.svg" class="wave-top">
+    <div class="back-button">
+      <ion-button fill="clear" (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </div>
+    <div class="logo">
+      <h1 class="title">Macbus</h1>
+    </div>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="subtitle">Iniciar Sesión</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <ion-list>
+            <div class="item">
+              <ion-item>
+                <ion-input
+                  label="Email"
+                  labelPlacement="floating"
+                  placeholder="Email"
+                  formControlName="email"
+                  type="email"
+                  required>
+                </ion-input>
+              </ion-item>
+              <ion-note color="danger" *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched">
+                El email es requerido
+              </ion-note>
+              <ion-note color="danger" *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched">
+                El email es inválido
+              </ion-note>
+            </div>
+            <div class="item">
+              <ion-item>
+                <ion-input
+                  label="Contraseña"
+                  labelPlacement="floating"
+                  placeholder="*****"
+                  formControlName="password"
+                  type="password"
+                  required>
+                </ion-input>
+              </ion-item>
+              <ion-note color="danger" *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
+                La contraseña es requerida
+              </ion-note>
+            </div>
+          </ion-list>
+          <ion-button 
+          type="submit" 
+          expand="block" 
+          fill="solid" 
+          class="btn">
+          Iniciar Sesión
+        </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+    <img src="assets/img/wave.svg" class="wave-bottom">
+  </div>
 </ion-content>

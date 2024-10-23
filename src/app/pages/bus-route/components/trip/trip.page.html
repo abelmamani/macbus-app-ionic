@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Viajes {{ busRouteName }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="list">
+    <ion-card class="card" *ngFor="let item of trips">
+        <ion-label>
+          {{item.departureTime}}
+        </ion-label>
+        <ion-button shape="round" fill="clear" (click)="startTrip(item.id)">
+          <ion-icon name="send" color="dark" size="small"></ion-icon>
+        </ion-button>
+    </ion-card>
+  </ion-list>
+</ion-content>
