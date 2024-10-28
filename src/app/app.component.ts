@@ -3,7 +3,7 @@ import { Component, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { bus, card, home, location, logIn, logOut, menuOutline } from 'ionicons/icons';
+import { bus, card, home, location, logIn, logOut, menuOutline, personCircleOutline } from 'ionicons/icons';
 import { Identity } from './models/identity.model';
 import { MenuItem } from './models/menu.item.model';
 import { PublicRoute } from './models/routes.model';
@@ -22,7 +22,7 @@ export class AppComponent {
   ]);
   identity = signal<Identity | null>(null);
   constructor(private authService: AuthService, private router: Router) {
-    addIcons({menuOutline, home, location, bus, card, logOut, logIn});
+    addIcons({menuOutline, home, location, bus, card, logOut, logIn, personCircleOutline});
     this.authService.getIdentitySubject().subscribe((identity: Identity | null) => {
       this.identity.set(identity ? identity : null);
     });

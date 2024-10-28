@@ -6,6 +6,7 @@ import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalo
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
 import { authInterceptor } from './app/interceptors/auth.interceptor';
+import { loadingInterceptor } from './app/interceptors/loading.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -13,6 +14,6 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular(),
     LocationAccuracy,
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor]))
+    provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor]))
   ],
 });

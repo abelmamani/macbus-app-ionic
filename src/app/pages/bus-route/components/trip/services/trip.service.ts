@@ -14,9 +14,18 @@ export class TripService {
   constructor(private http: HttpClient) {}
   
   getTripsByRoute(route: string):Observable<Trip[]>{
-    return this.http.get<[]>(`${this.apiUrl}/${route}`);
+    return this.http.get<Trip[]>(`${this.apiUrl}/${route}`);
+  }
+  getTripUpdate(id: string):Observable<TripUpdate>{
+    return this.http.get<TripUpdate>(`${this.apiUrl}/trip_update/${id}`);
   }
   startTrip(tripUpdate: TripUpdate):Observable<number>{
-    return this.http.post<number>(`${this.apiUrl}/start_trip`, tripUpdate);
+    return this.http.post<number>(`${this.apiUrl}/trip_update/start`, tripUpdate);
+  }
+  updatetTripUpdate(tripUpdate: TripUpdate):Observable<number>{
+    return this.http.put<number>(`${this.apiUrl}/trip_update/update`, tripUpdate);
+  }
+  finishTripUpdate(id: string):Observable<any>{
+    return this.http.delete(`${this.apiUrl}/trip_update/${id}`);
   }
 }

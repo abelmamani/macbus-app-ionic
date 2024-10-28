@@ -3,8 +3,10 @@
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
-          <ion-list-header>Macbus</ion-list-header>
-          <ion-note *ngIf="identity()">{{identity()?.username}}</ion-note>
+          <ion-list-header  *ngIf="identity()">
+            <ion-icon name="person-circle-outline" size="small"></ion-icon>
+            <span class="identity"> {{identity()?.username}}</span>
+            </ion-list-header>
           <ion-menu-toggle auto-hide="false">
             <ion-item routerDirection="root" [routerLink]="[item.route]" lines="none" detail="false" routerLinkActive="selected" *ngFor="let item of menuItems()">
               <ion-icon aria-hidden="true" slot="start" [ios]="item.icon" [md]="item.icon"></ion-icon>

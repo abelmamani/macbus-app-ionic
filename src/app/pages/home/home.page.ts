@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { PublicRoute } from 'src/app/models/routes.model';
 import { StopHistory } from 'src/app/models/stop.history.model';
 import { StopHistoryService } from 'src/app/services/stop.history.service';
+import { getTimeAgo } from 'src/app/utils/time.utils';
 import { NavOption } from './models/nav.option.model';
 @Component({
   selector: 'app-home',
@@ -33,7 +34,7 @@ export class HomePage  implements OnInit{
   }
 
   getTimeAgo(timestamp: number): string {
-    return this.stopHistoryService.getTimeAgo(timestamp);
+    return getTimeAgo(timestamp);
   }
   openMenu(){
     this.menuController.open();

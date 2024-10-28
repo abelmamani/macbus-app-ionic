@@ -1,14 +1,98 @@
-.title{
-    font-size: 24px;
+.btn{
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
-.card{
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 20;
+}
+
+.trip-buttons {
+  position: absolute;
+  display: flex;
+  top: 20px;
+  right: 20px;
+  gap: 10px;
+  z-index: 100;
+}
+
+
+.split-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .map-container {
+    flex: 1;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .map {
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+  }
+    
+  .routes-container {
+    flex: 1;
+    overflow-y: auto; 
+  }
+  
+  .item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 5px 5px;
-}
+  }
+  .list{
+    overflow-y: scroll;
+  }
+  
+  .route-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .route-short-name {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 4px;
+  }
 
-.bus{
-    font-weight: bold; 
+  .long-name {
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  
+  .bus {
+    font-weight: bold;
     font-size: 24px;
+  }
+  
+  .buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .header{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+  }
+  .sequence {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
   }

@@ -37,3 +37,27 @@
     animation: blink 0.5s infinite; 
   }
 
+  .stop-button {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    bottom: 20px; 
+    z-index: 1000; 
+  }
+
+  .stop{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .stop-button ion-button {
+    background-color: black; 
+    color: white;
+    border-radius: 25px; 
+    padding: 5px; 
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: none;
+    transition: background-color 0.3s;
+  }

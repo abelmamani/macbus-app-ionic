@@ -1,8 +1,13 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>  <ion-icon name="location" color="dark" size="small"></ion-icon>{{stopName}}</ion-title>
+    <div class="stop">
+      <ion-icon name="location" color="dark" size="small"></ion-icon>
+      <p>{{stopName}}</p>
+    </div>
     <ion-buttons slot="end">
-      <ion-button (click)="closeModal()">Cerrar</ion-button>
+      <ion-button (click)="closeModal()">
+        <ion-icon name="close-outline" color="dark" size="small"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -10,18 +15,26 @@
 <ion-content>
   <ion-list class="list">
     <ion-card *ngFor="let st of stopTimes" class="card">
-     
-      <ion-label>
-        <label>
-          <ion-icon name="time-outline" color="dark" size="small"></ion-icon>
-          {{st.arrivalTime}}
-        </label>
-        <div>Linea {{st.route}} </div>
-        <div><span *ngIf="st.headsign !== 'FINALIZANDO' && st.headsign !== 'FIN'">a</span> {{st.headsign}}</div>
-      </ion-label>
-      <ion-button shape="round" fill="clear">
-        <ion-icon name="bus-outline" color="dark" size="small"></ion-icon>
-      </ion-button>
+      <div class="content">
+        <div class="detail">
+          <div class="time">
+            <ion-icon name="time-outline" color="dark" size="small"></ion-icon>
+            <span>{{st.arrivalTime}}</span>
+          </div>
+          <div class="route">
+            <ion-icon name="bus-outline" color="dark" size="small"></ion-icon>
+            <span>{{st.route}}</span>
+          </div>
+        </div>
+        <p class="destination">
+          <span>{{st.headsign !== 'FINALIZANDO' && st.headsign !== 'FIN' ? 'a '+st.headsign : 'Finalizando'}}</span>
+        </p>
+      </div>
+      <div class="options">
+        <ion-button shape="round" fill="clear" size="small" [disabled]="st.tripStatus !== 'RUNNING'" (click)="getTripUpdate(st.trip)">
+          <ion-icon name="open-outline" color="dark" size="small"></ion-icon>
+        </ion-button>
+      </div>
     </ion-card>
   </ion-list>
   <div *ngIf="stopTimes.length === 0">
@@ -30,3 +43,4 @@
     </ion-title>
   </div>
 </ion-content>
+

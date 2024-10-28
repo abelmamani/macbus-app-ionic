@@ -8,4 +8,12 @@
     </ion-button>
   </div>
   <div #map id="map" class="map"></div>
+
+  <div class="stop-button" *ngIf="tripUpdate">
+    <div class="stop">
+      <ion-button fill="clear" (click)="stopTripUpdate()">
+        Dejar de serguir bus
+      </ion-button>
+    </div>
+  </div>
 </ion-content>

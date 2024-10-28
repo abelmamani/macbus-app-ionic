@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LocationAccuracy } from '@awesome-cordova-plugins/location-accuracy/ngx';
-import { Capacitor } from '@capacitor/core';
-import { Geolocation } from '@capacitor/geolocation';
 import { IonButton, IonContent, IonHeader, IonIcon, ModalController, NavController, ToastController } from '@ionic/angular/standalone';
-import { AndroidSettings, IOSSettings, NativeSettings } from 'capacitor-native-settings';
 import { addIcons } from 'ionicons';
 import { arrowBackOutline } from 'ionicons/icons';
 import * as L from 'leaflet';
+import { interval, Subscription } from 'rxjs';
+import { LocationService } from 'src/app/services/location.service';
+import { getTimeAgo } from 'src/app/utils/time.utils';
+import { TripUpdate } from '../bus-route/components/trip/models/trip.update.model';
+import { TripService } from '../bus-route/components/trip/services/trip.service';
 import { StopTimeComponent } from './components/stop-time/stop-time.component';
 import { Stop } from './models/stop.model';
 import { StopService } from './services/stop.service';
@@ -25,8 +27,11 @@ export class StopPage{
   private userMarker: L.CircleMarker | null = null;
   private pulseEffect: any;
   private defaultLocation: [number, number] = [-29.162033, -67.496040];
+  tripUpdate!: TripUpdate | null;
+  updateSubscription!: Subscription | null;
+  private busMarker!: L.Marker | null;
 
-  constructor(private stopService: StopService, private locationAccuracy: LocationAccuracy, private navCtrl: NavController, private modalController: ModalController, private toastController: ToastController) {
+  constructor(private stopService: StopService, private locationAccuracy: LocationAccuracy, private tripService: TripService, private locationService: LocationService, private navCtrl: NavController, private modalController: ModalController, private toastController: ToastController) {
     addIcons({arrowBackOutline});
   }
 
@@ -38,68 +43,25 @@ export class StopPage{
     this.navCtrl.back();
   }
 
-  private async getCurrentLocation(): Promise<[number, number]> {
-    try {
-      const permissionStatus = await Geolocation.checkPermissions();
-      if (permissionStatus?.location !== 'granted') {
-        const requestStatus = await Geolocation.requestPermissions();
-        if (requestStatus.location !== 'granted') {
-          await this.openSettings(true);
-          this.showToast("No se pudo obtener su ubicacion");
-          return this.defaultLocation;
-        }
-      }
-  
-      if (Capacitor.getPlatform() === 'android') {
-        await this.enableGps();
-      }
-      let options: PositionOptions = {
-        maximumAge: 3000,
-        timeout: 10000,
-        enableHighAccuracy: true
-      };
-      const position = await Geolocation.getCurrentPosition(options);
-     
-      return [position.coords.latitude, position.coords.longitude];
-    } catch (e: any) {
-      if (e?.message === 'Location services are not enabled') {
-        await this.openSettings();
-      }
-      this.showToast("No se pudo obtener su ubicacion");
-      return this.defaultLocation;
-    }
-  }
-
-  private openSettings(app = false) {
-    return NativeSettings.open({
-      optionAndroid: app ? AndroidSettings.ApplicationDetails : AndroidSettings.Location,
-      optionIOS: app ? IOSSettings.App : IOSSettings.LocationServices
-    });
-  }
-
-  private async enableGps() {
-    const canRequest = await this.locationAccuracy.canRequest();
-    if (canRequest) {
-      await this.locationAccuracy.request(this.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY);
-    }
-  }
-
   private async initMap(): Promise<void> {
     if (this.mapContainer && this.mapContainer.nativeElement) {
-      const location: [number, number] = await this.getCurrentLocation();
+      const location: [number, number] | null = await this.locationService.getCurrentLocation();
       this.map = L.map(this.mapContainer.nativeElement, {
-        center: location,
+        center: location ? location : this.defaultLocation,
         zoom: 15,
         zoomControl: false
       });
-      //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        //attribution: '© OpenStreetMap contributors'
-      //}).addTo(this.map);
+      /*
+       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(this.map);
+      */
       L.tileLayer('https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=80b8814ea749431d94c7899f1454d687', {
         attribution: '&copy; <a href="https://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(this.map);
+     
       this.loadStops();
-      this.addUserMarker(location);
+      this.addUserMarker(location ? location : this.defaultLocation);
     }
   }
   
@@ -165,6 +127,9 @@ export class StopPage{
   }
 
   async getStopTimes(stopId: string, stopName: string) {
+    if(this.tripUpdate){
+      return;
+    }
     const modal = await this.modalController.create({
       component: StopTimeComponent,
       componentProps: {
@@ -175,11 +140,83 @@ export class StopPage{
     breakpoints: [0.3, 0.5, 1], 
     backdropDismiss: true,
     });
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        this.TripUpdateHandle(result.data.tripUpdate);
+      }
+    });
     return await modal.present();
   }
 
+  TripUpdateHandle(tripUpdate: TripUpdate){
+    this.tripUpdate = tripUpdate;
+    this.startTripUpdate();
+  }
+
+  startTripUpdate() {
+    if (this.tripUpdate) {
+      this.updateSubscription = interval(15000).subscribe(() => {
+        this.getTripUpdate();
+      });
+      this.getTripUpdate();
+    }
+  }
+
+  getTripUpdate() {
+    if (this.tripUpdate) {
+      this.tripService.getTripUpdate(this.tripUpdate.id).subscribe({
+        next: (res: TripUpdate) => {
+          this.tripUpdate = res;
+          this.updateBusMarker(res);
+        },
+        error: (err) => {
+          this.stopTripUpdate();
+          this.showToast(err.error.message ? err.error.message : "No se puede obtener la ubicación, inténtelo más tarde!");
+        }
+      });
+    }
+  }
+  stopTripUpdate() {
+    if (this.updateSubscription) {
+      this.updateSubscription.unsubscribe(); 
+      this.updateSubscription = null;
+    }
+    this.tripUpdate = null; 
+    this.removeBusMarker(); 
+  }
+
+  updateBusMarker(tripUpdate: TripUpdate) {
+    if (this.busMarker) {
+      this.busMarker.setLatLng([tripUpdate.latitude, tripUpdate.longitude]);
+      this.busMarker.setPopupContent(`${tripUpdate.route} - ${getTimeAgo(tripUpdate.timestamp)}`);
+    } else {
+      const busIcon = L.icon({
+        iconUrl: 'assets/img/front-of-bus.png', 
+        iconSize: [30, 30],
+        iconAnchor: [15, 30],
+        popupAnchor: [0, -30], 
+      });
+      this.busMarker = L.marker([tripUpdate.latitude, tripUpdate.longitude], {
+        icon: busIcon,
+      }).bindPopup(tripUpdate.route + " - " + getTimeAgo(tripUpdate.timestamp)).addTo(this.map);
+    }
+  }
+  
+
+  removeBusMarker() {
+    if (this.busMarker) {
+      this.map.removeLayer(this.busMarker); 
+      this.busMarker = null; 
+    }
+  }
+
   ionViewWillLeave() {
+    if (this.updateSubscription) {
+      this.updateSubscription.unsubscribe(); 
+      this.updateSubscription = null;
+    }
     if (this.map) {
+      this.removeBusMarker(); 
       this.map.remove();
     }
   }
