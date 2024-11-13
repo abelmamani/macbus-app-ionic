@@ -9,8 +9,8 @@ import { TripUpdate } from '../models/trip.update.model';
 })
 
 export class TripService {
-  //private apiUrl = "https://macbus-api-rest.vercel.app/api/routes";
-  private apiUrl = "http://localhost:3000/api/trips";
+  private apiUrl = "https://macbus-api-rest.vercel.app/api/trips";
+  //private apiUrl = "http://localhost:3000/api/trips";
   constructor(private http: HttpClient) {}
   
   getTripsByRoute(route: string):Observable<Trip[]>{

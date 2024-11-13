@@ -14,18 +14,20 @@
     font-weight: bold; 
     font-size: 24px; 
   }
-
-  ion-card-header{
+  .container {
     display: flex;
-    flex-direction: column;
+    justify-content: center; 
+    align-items: center; 
+    height: 100%;  
   }
-  .logo{
-    margin-top: 20vh;
+  .card{
+    width: 100%;
+    margin: 10px;
   }
   .title {
     text-align: center;
     font-family: 'Roboto', sans-serif;
-    font-size: 48px;
+    font-size: 64px;
     font-weight: bold;
   }
   .subtitle {
@@ -33,6 +35,7 @@
     text-align: center;
     font-size: 24px;
     color: black;
+    margin-bottom: 10px;
   }
 
   form {
@@ -54,15 +57,16 @@
   }
 
   ion-button {
+    margin-top: 20px;
     text-transform: none;
   }
 
   .btn {
-    --background: black; 
+    --background: rgb(21, 67, 232); 
     --color: white;
     --border-radius: 8px; 
-    --padding-top: 12px;
-  --padding-bottom: 12px; 
+    --padding-top: 15px;
+    --padding-bottom: 15px; 
     font-weight: bold; 
     font-size: 16px; 
     letter-spacing: 1px; 
@@ -76,6 +80,13 @@
     position: absolute;
     top: 0;
     width: 100%;
+    z-index: 1;
+  }
+
+  .logo {
+    position: absolute;
+    top: 0;
+    width: 50%;
     z-index: 1;
   }
   

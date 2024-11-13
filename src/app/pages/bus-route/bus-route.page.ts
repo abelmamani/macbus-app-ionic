@@ -6,6 +6,7 @@ import { arrowBackOutline, busOutline, locationOutline, openOutline, refreshOutl
 import * as L from 'leaflet';
 import { Identity } from 'src/app/models/identity.model';
 import { AuthService } from 'src/app/services/auth.service';
+import { LocationService } from 'src/app/services/location.service';
 import { TripUpdateService } from 'src/app/services/trip.update.service';
 import { getTimeAgo } from 'src/app/utils/time.utils';
 import { Stop } from '../stop/models/stop.model';
@@ -16,6 +17,7 @@ import { BusRoute } from './models/bus.route.model';
 import { Shape } from './models/shape.model';
 import { StopSequence } from './models/stop.sequence.model';
 import { BusRouteService } from './services/bus-route.service';
+import { EPrivilege } from 'src/app/models/privilege.enum';
 
 @Component({
   selector: 'app-bus-route',
@@ -43,7 +45,7 @@ export class BusRoutePage{
   isFinishEnabled = false;
   private defaultLocation: [number, number] = [-29.300575, -67.504712];
 
-  constructor(private busRouteService: BusRouteService, private authService: AuthService, private tripUpdateService: TripUpdateService, private tripServcie: TripService, private modalController: ModalController, private toastController: ToastController, private navCtrl: NavController) {
+  constructor(private busRouteService: BusRouteService, private authService: AuthService, private tripUpdateService: TripUpdateService, private tripServcie: TripService, private locationService: LocationService, private modalController: ModalController, private toastController: ToastController, private navCtrl: NavController) {
     addIcons({arrowBackOutline, busOutline, openOutline, timeOutline, locationOutline, refreshOutline, stopCircleOutline});
     this.authService.getIdentitySubject().subscribe((identity: Identity | null) => {
       this.identity.set(identity ? identity : null);
@@ -204,7 +206,7 @@ export class BusRoutePage{
   startLocationUpdates() {
     if (!this.locationInterval) {
       this.locationInterval = setInterval(async () => {
-        const location = await this.defaultLocation; 
+        const location: [number, number] | null = await this.locationService.getCurrentLocation(); 
         if (location) {
           this.tripUpdate!.latitude = location[0];
           this.tripUpdate!.longitude = location[1];
@@ -219,11 +221,11 @@ export class BusRoutePage{
               this.isRestartEnabled = true;
               clearInterval(this.locationInterval);
               this.locationInterval = null; 
-              console.log(err)
-              this.showToast("Error al enviar la ubicación.")
+              this.showToast(err.error.message ? err.error.message :"No se pudo actualizar el viaje");
             }
           });
         } else {
+          this.showToast("Active su ubicacion para actualizar el viaje")
           this.isRestartEnabled = true;
           clearInterval(this.locationInterval);
           this.locationInterval = null; 
@@ -246,7 +248,7 @@ export class BusRoutePage{
           this.showToast("Viaje finalizado.");
         },
         error: (err) => {
-          this.showToast("Hubo un problema al finalizar el viaje!");
+          this.showToast("Hubo un problema al finalizar el viaje");
         }
       }); 
     }
@@ -301,6 +303,10 @@ export class BusRoutePage{
     if (this.map) {
       this.map.remove();
     }
+  }
+
+  isConductor(): boolean{
+    return this.authService.hasAuthority(EPrivilege.CONDUCTOR);
   }
 
   goBackBusRoutes(){

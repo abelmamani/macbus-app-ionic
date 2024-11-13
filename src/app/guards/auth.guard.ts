@@ -1,17 +1,18 @@
-import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
 import { inject } from '@angular/core';
-import { PrivateRoute, PublicRoute } from '../models/routes.model';
+import { CanActivateFn, Router } from '@angular/router';
+import { PublicRoute } from '../models/routes.model';
+import { AuthService } from '../services/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const authService: AuthService = inject(AuthService);
   const router: Router = inject(Router);
-  const requiredRoles = route.data?.['roles'];
-  if(!authService.isLogged()){
-    if(!requiredRoles || authService.hasRole(requiredRoles)){
+  const requiredPrivilege = route.data?.['privilege'];
+
+  if(authService.isLogged()){
+    if(!requiredPrivilege || authService.hasAuthority(requiredPrivilege)){
       return true;
     }else{
-      router.navigate([PrivateRoute.HOME]);
+      router.navigate([PublicRoute.HOME]);
       return false;
     }
   }else{

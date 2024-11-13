@@ -33,6 +33,7 @@ export class LoginPage implements OnInit {
     if(this.loginForm.valid){
       this.authService.signin(this.loginForm.value).subscribe({
         next: (res: ResponseAuth) => {
+          this.authService.login(res.token, res.identity);
           this.router.navigate([PublicRoute.HOME]);
         },
         error: ( err ) => {

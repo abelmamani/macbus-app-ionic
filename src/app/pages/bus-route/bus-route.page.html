@@ -34,7 +34,7 @@
             </div>
           </div>
           <div class="buttons">
-            <ion-button *ngIf="identity()" [disabled]="isRestartEnabled || isFinishEnabled" shape="round" fill="clear" (click)="getTrips(item)">
+            <ion-button *ngIf="identity() && isConductor()" [disabled]="isRestartEnabled || isFinishEnabled" shape="round" fill="clear" (click)="getTrips(item)">
               <ion-icon name="time-outline" color="dark" size="small"></ion-icon>
             </ion-button>
             <ion-button [disabled]="tripUpdate && item.longName !== tripUpdate.route" shape="round" fill="clear" size="small" (click)="viewDetails(item)">
@@ -50,7 +50,7 @@
             <ion-icon name="arrow-back-outline" color="dark" size="small"></ion-icon>
           </ion-button>
           <span>Linea {{currentBusRoute?.longName}}</span>
-          <span *ngIf="tripUpdate">{{getTimeAgo(tripUpdate.timestamp)}}</span> 
+          <span *ngIf="tripUpdate">{{" - "+getTimeAgo(tripUpdate.timestamp)}}</span> 
         </div>
         <div class="sequence"  *ngFor="let item of stopSequences" [ngStyle]="{'background': currentBusRoute && currentBusRoute.id === item.id ? 'gray' : 'white'}">
           <div class="route-name">

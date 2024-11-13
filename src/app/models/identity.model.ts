@@ -1,6 +1,6 @@
-import { ERole } from "./role.model";
+import { Role } from "./role.model copy";
 
 export interface Identity{
     username: string;
-    role: ERole;
+    role: Role;
 }

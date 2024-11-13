@@ -1,38 +1,27 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Identity } from '../models/identity.model';
+import { EPrivilege } from '../models/privilege.enum';
 import { RequestLogin } from '../models/request.login.model';
 import { ResponseAuth } from '../models/response.auth.model';
-import { ERole } from '../models/role.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private url: string = 'http://localhost:3000/api/users';
-  //private url = "https://macbus-api-rest.vercel.app/api/users";
+  //private url: string = 'http://localhost:3000/api/users';
+  private url = "https://macbus-api-rest.vercel.app/api/users";
   private identitySubject = new BehaviorSubject<Identity | null>(this.getIdentity());
  
   constructor(private http: HttpClient) {}
 
   signin(requestLogin: RequestLogin): Observable<ResponseAuth> {
-    return this.http.post<ResponseAuth>(`${this.url}/login`, requestLogin)
-      .pipe(
-        tap(response => {
-          this.saveCredentials(response);
-          this.identitySubject.next(response.identity);
-        })
-      );
+    return this.http.post<ResponseAuth>(`${this.url}/login`, requestLogin);
   }
 
   isLogged(){
     return !!localStorage.getItem('token') && !!localStorage.getItem('identity');
-  }
-
-  saveCredentials(responseAuth: ResponseAuth){
-    localStorage.setItem('token', responseAuth.token);
-    localStorage.setItem('identity', JSON.stringify(responseAuth.identity));
   }
 
   getToken(){return this.isLogged() ? localStorage.getItem('token') : null;
@@ -46,15 +35,21 @@ export class AuthService {
     return null;
   }
 
+  login(token: string, identity: Identity): void {
+    localStorage.setItem('token', token);
+    localStorage.setItem('identity', JSON.stringify(identity));
+    this.identitySubject.next(identity);
+  }
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('identity');
     this.identitySubject.next(null);
   }
 
-  hasRole(requiredRoles: ERole[]): boolean {
+  hasAuthority(requiredPrivilege: EPrivilege): boolean {
     const identity: Identity | null = this.getIdentity();
-    return identity ? requiredRoles.some(role => identity.role === role) : false;
+    return identity ? identity.role.privileges.some(privilege => privilege.name ===  requiredPrivilege) : false;
   }
 
   getIdentitySubject(): Observable<Identity | null> {
