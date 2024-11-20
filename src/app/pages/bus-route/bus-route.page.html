@@ -20,9 +20,7 @@
     </div>
     <div class="routes-container">
       <ion-list *ngIf="!selectedItem">
-        <ion-list-header>
-          <span>Lineas disponibles</span>
-        </ion-list-header>
+        <ion-list-header>Lineas disponibles</ion-list-header>
         <div class="item" *ngFor="let item of busRoutes">
           <div class="route-name">
             <ion-card class="route-short-name" [ngStyle]="{'border-bottom': '3px solid ' + item.color}">

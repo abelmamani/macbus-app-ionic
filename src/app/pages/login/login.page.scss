@@ -7,13 +7,12 @@
     z-index: 10;
   }
 
-  .back-button ion-button {
-    --color: white;
-  }
   .back-button ion-icon {
     font-weight: bold; 
     font-size: 24px; 
+    color: black;
   }
+
   .container {
     display: flex;
     justify-content: center; 
@@ -22,7 +21,7 @@
   }
   .card{
     width: 100%;
-    margin: 10px;
+    margin: 16px;
   }
   .title {
     text-align: center;
@@ -30,18 +29,17 @@
     font-size: 64px;
     font-weight: bold;
   }
+
   .subtitle {
     font-family: 'Roboto', sans-serif;
     text-align: center;
     font-size: 24px;
     color: black;
-    margin-bottom: 10px;
   }
 
   form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
   }
 
   ion-list{
@@ -62,7 +60,7 @@
   }
 
   .btn {
-    --background: rgb(21, 67, 232); 
+    --background: black; 
     --color: white;
     --border-radius: 8px; 
     --padding-top: 15px;
@@ -70,29 +68,4 @@
     font-weight: bold; 
     font-size: 16px; 
     letter-spacing: 1px; 
-    transition: background 0.3s ease;
-  }
-  
-  .btn:hover {
-    --background: #333; 
-  }
-  .wave-top {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 1;
-  }
-
-  .logo {
-    position: absolute;
-    top: 0;
-    width: 50%;
-    z-index: 1;
-  }
-  
-  .wave-bottom {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    z-index: 1;
   }

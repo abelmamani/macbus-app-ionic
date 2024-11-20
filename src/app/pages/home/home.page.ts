@@ -1,42 +1,79 @@
 // home.page.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { MenuController } from '@ionic/angular/standalone';
+import { MenuController, ModalController, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { busOutline, locationOutline } from 'ionicons/icons';
+import { busOutline, locationOutline, openOutline } from 'ionicons/icons';
 import { Observable } from 'rxjs';
 import { PublicRoute } from 'src/app/models/routes.model';
 import { StopHistory } from 'src/app/models/stop.history.model';
+import { LocationService } from 'src/app/services/location.service';
 import { StopHistoryService } from 'src/app/services/stop.history.service';
 import { getTimeAgo } from 'src/app/utils/time.utils';
-import { NavOption } from './models/nav.option.model';
+import { StopTimeComponent } from '../stop/components/stop-time/stop-time.component';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterLink],
+  imports: [IonicModule, CommonModule],
 })
 export class HomePage  implements OnInit{
-  navOptions: NavOption[] = [
-    {title: 'Paradas', icon: 'location-outline', url: PublicRoute.BUS_STOPS},
-    {title: 'Lineas', icon: 'bus-outline', url: PublicRoute.BUS_ROUTES},
-  ];
+  private defaultLocation: [number, number] = [-29.162033, -67.496040];
   recentStops$!: Observable<StopHistory[]>;
-  constructor(private stopHistoryService: StopHistoryService, private menuController: MenuController) {
-    addIcons({locationOutline, busOutline});
+  constructor(private stopHistoryService: StopHistoryService, private locationService: LocationService, private toastController: ToastController, private menuController: MenuController, private modalController: ModalController, private router: Router) {
+    addIcons({locationOutline, busOutline, openOutline});
   }
 
   ngOnInit(): void {
     this.recentStops$ = this.stopHistoryService.history$;
   }
 
+  openMenu(){
+    this.menuController.open();
+  }
+
+  async getStops(){
+    const location: [number, number] | null = await this.locationService.getCurrentLocation();
+    if(location){
+    this.router.navigate([PublicRoute.BUS_STOPS]);
+    }else{
+      this.showToast("Active su ubicacion.");
+    }
+  }
+
+  getRoutes(){
+    this.router.navigate([PublicRoute.BUS_ROUTES]);
+  }
+
+  async getStopTimes(stopId: string, stopName: string) {
+    const modal = await this.modalController.create({
+      component: StopTimeComponent,
+      componentProps: {
+        stopId: stopId,
+        stopName: stopName,
+        isMap: false
+      },
+      initialBreakpoint: 0.3, 
+    breakpoints: [0.3, 0.5, 1], 
+    backdropDismiss: true,
+    });
+    
+    return await modal.present();
+  }
+
   getTimeAgo(timestamp: number): string {
     return getTimeAgo(timestamp);
   }
-  openMenu(){
-    this.menuController.open();
+
+  async showToast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1500,
+      position: 'bottom',
+    });
+    await toast.present();
   }
 }

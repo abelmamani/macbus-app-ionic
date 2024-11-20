@@ -1,46 +1,80 @@
 <ion-header>
   <ion-toolbar>
-    <div class="stop">
-      <ion-icon name="location" color="dark" size="small"></ion-icon>
-      <p>{{stopName}}</p>
+    <div class="modal-header">
+      <div class="modal-header-content">
+        <div class="stop-name">
+          <ion-icon name="location" color="dark" size="small"></ion-icon>
+          <p>{{ stopName }}</p>
+        </div>
+        <div class="stop-name">
+          <ion-icon name="calendar-outline" color="dark" size="small"></ion-icon>
+          <ion-datetime-button datetime="datetime"></ion-datetime-button>
+        </div>
+      </div>
+      <div class="close-button">
+        <ion-button fill="clear" (click)="closeModal()">
+          <ion-icon name="close-outline" color="dark" size="medium"></ion-icon>
+        </ion-button>
+      </div>
     </div>
-    <ion-buttons slot="end">
-      <ion-button (click)="closeModal()">
-        <ion-icon name="close-outline" color="dark" size="small"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list class="list">
-    <ion-card *ngFor="let st of stopTimes" class="card">
+    <div *ngFor="let st of stopTimes" class="item">
       <div class="content">
         <div class="detail">
           <div class="time">
             <ion-icon name="time-outline" color="dark" size="small"></ion-icon>
-            <span>{{st.arrivalTime}}</span>
+            <span>{{ st.arrivalTime }}</span>
           </div>
           <div class="route">
             <ion-icon name="bus-outline" color="dark" size="small"></ion-icon>
-            <span>{{st.route}}</span>
+            <span>{{ st.route }}</span>
           </div>
         </div>
         <p class="destination">
-          <span>{{st.headsign !== 'FINALIZANDO' && st.headsign !== 'FIN' ? 'a '+st.headsign : 'Finalizando'}}</span>
+          <span>
+            {{ st.headsign !== 'FINALIZANDO' && st.headsign !== 'FIN' ? 'a ' + st.headsign : 'Finalizando' }}
+          </span>
         </p>
       </div>
-      <div class="options">
-        <ion-button shape="round" fill="clear" size="small" [disabled]="st.tripStatus !== 'RUNNING'" (click)="getTripUpdate(st.trip)">
+      <div class="options" *ngIf="!selectedDate && isMap">
+        <ion-button
+          shape="round"
+          fill="clear"
+          size="small"
+          [disabled]="st.tripStatus !== 'RUNNING'"
+          (click)="getTripUpdate(st.trip)"
+        >
           <ion-icon name="open-outline" color="dark" size="small"></ion-icon>
         </ion-button>
       </div>
-    </ion-card>
+    </div>
   </ion-list>
-  <div *ngIf="stopTimes.length === 0">
-    <ion-title>
-      Sin arribos de colectivos
-    </ion-title>
-  </div>
-</ion-content>
 
+  <div *ngIf="isLoading" class="loading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando...</p>
+  </div>
+
+  <div *ngIf="stopTimes.length === 0 && !isLoading">
+    <ion-title>Sin arribos de colectivos</ion-title>
+  </div>
+
+  <ion-modal [keepContentsMounted]="true" #modal>
+    <ng-template>
+        <ion-datetime
+          id="datetime"
+          presentation="date"
+          [value]="selectedDate || today"
+          (ionChange)="onDateChange($event)"
+          [formatOptions]="{
+            date: {
+              weekday: 'short',
+              month: 'long',
+              day: '2-digit'}}"></ion-datetime>
+    </ng-template>
+  </ion-modal>
+</ion-content>

@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
-import { IonAvatar, IonButton, IonButtons, IonCard, IonCardContent, IonCardTitle, IonContent, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonTitle, IonToolbar, ModalController, ToastController } from '@ionic/angular/standalone';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { IonButton, IonButtons, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonIcon, IonList, IonModal, IonSpinner, IonTitle, IonToolbar, ModalController, ToastController} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { busOutline, closeOutline, location, openOutline, timeOutline } from 'ionicons/icons';
+import { busOutline, calendarOutline, closeOutline, location, openOutline, timeOutline } from 'ionicons/icons';
 import { TripUpdate } from 'src/app/pages/bus-route/components/trip/models/trip.update.model';
 import { TripService } from 'src/app/pages/bus-route/components/trip/services/trip.service';
 import { StopHistoryService } from 'src/app/services/stop.history.service';
@@ -13,17 +13,21 @@ import { StopService } from '../../services/stop.service';
   templateUrl: './stop-time.component.html',
   styleUrls: ['./stop-time.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton, IonImg, IonLabel, IonAvatar, IonList, IonItem, IonCard, IonCardContent, IonCardTitle, IonIcon]
+  imports: [CommonModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton, IonList, IonIcon, IonModal, IonDatetime, IonSpinner, IonDatetimeButton]
 })
 export class StopTimeComponent  implements OnInit {
- 
+  @ViewChild(IonModal) modal!: IonModal;
   @Input() stopId!: string;
   @Input() stopName!: string;
+  @Input() isMap: boolean = false;
   stopTimes: StopTime[] = [];
-  constructor(private stopService: StopService, private stopHistoryService: StopHistoryService, private tripService: TripService, private modalController: ModalController, private toastController: ToastController) { }
+  selectedDate: string | null = null;
+  today: string = new Date().toISOString().split('T')[0]; 
+  isLoading: boolean = true;
+  constructor(private stopService: StopService, private stopHistoryService: StopHistoryService, private tripService: TripService, private modalController: ModalController, private toastController: ToastController) {}
 
   ngOnInit() {
-    addIcons({timeOutline, location, busOutline, openOutline, closeOutline});
+    addIcons({timeOutline, location, busOutline, openOutline, closeOutline, calendarOutline});
     this.getStopTimes();
   }
 
@@ -32,15 +36,40 @@ export class StopTimeComponent  implements OnInit {
   }
 
   getStopTimes() {
+    this.isLoading = true;
     this.stopService.getStopTimes(this.stopName).subscribe({
       next: (res: StopTime[]) => {
         this.stopTimes = res;
         this.stopHistoryService.addStop(this.stopId, this.stopName);
+        this.isLoading = false;
       },
       error: (error) => {
-        this.showToast("Hubo problema al obtener los arribos");
+        this.showToast("Hubo problema al obtener los arribos de hoy");
+      this.isLoading = false;
       }
     });
+  }
+
+  getStopTimesByDate(date: string){
+    this.isLoading = true;
+    this.stopService.getStopTimesBydate(this.stopName, date).subscribe({
+      next: (res: StopTime[]) => {
+        this.stopTimes = res;
+        this.stopHistoryService.addStop(this.stopId, this.stopName);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.stopTimes = [];
+        this.showToast(error.error.message ? error.error.message : "Hubo problema al obtener los arribos para "+this.selectedDate);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  onDateChange(event: any) {
+    this.modal.dismiss();
+    this.selectedDate = new Date(event.detail.value).toISOString().split('T')[0]; 
+    this.getStopTimesByDate(this.selectedDate);
   }
 
   getTripUpdate(id: string) {
@@ -54,7 +83,7 @@ export class StopTimeComponent  implements OnInit {
       }
     });
   }
-
+  
   formatArrivalTime(arrivalTime: string): string {
     //const now = toZonedTime(new Date(), 'America/Argentina/Buenos_Aires');
     const now = new Date();

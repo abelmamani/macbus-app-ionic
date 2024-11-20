@@ -3,16 +3,24 @@
 
 <ion-content class="ion-padding">
   <ion-toolbar>
-    <ion-title class="title" (click)="openMenu()">Macbus</ion-title>
+    <ion-title class="logo-title" (click)="openMenu()">Macbuss</ion-title>
   </ion-toolbar>
+
   <div class="nav-options">
-    <div class="button-inner" *ngFor="let option of navOptions">
-      <ion-button expand="block" fill="solid" color="dark" shape="round" size="large" [routerLink]="'/'+[option.url]">
-        <ion-icon name={{option.icon}}></ion-icon>
+    <div class="button-inner">
+      <ion-button class="opcion" fill="clear" size="large" (click)="getStops()">
+        <ion-icon slot="icon-only"  name='location-outline'></ion-icon>
       </ion-button>
-      <ion-label>{{option.title}}</ion-label>
+      <ion-label>Paradas</ion-label>
+    </div>
+    <div class="button-inner">
+      <ion-button class="opcion" fill="clear" size="large" (click)="getRoutes()">
+        <ion-icon slot="icon-only"  name="bus-outline"></ion-icon>
+      </ion-button>
+      <ion-label>Lineas</ion-label>
     </div>
   </div>
+
   <ion-list lines="full">
     <ion-list-header>Recientes</ion-list-header>
     <ion-item *ngFor="let item of recentStops$ | async">
@@ -21,6 +29,11 @@
         <h3>{{ item.name }}</h3>
         <p>{{ getTimeAgo(item.timestamp)}}</p>
       </ion-label>
+      <div class="options">
+        <ion-button shape="round" fill="clear" size="small" (click)="getStopTimes(item.id, item.name)">
+          <ion-icon name="open-outline" color="dark" size="small"></ion-icon>
+        </ion-button>
+      </div>
     </ion-item>
   </ion-list>
 </ion-content>

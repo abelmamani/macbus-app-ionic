@@ -1,20 +1,36 @@
-.stop{
+.modal-header{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 16px;
+}
+
+.modal-header-content{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.stop-name{
   display: flex;
   justify-content: start;
   align-items: center;
   gap: 5px;
-  padding: 2px 5px;
 }
+
 .list{
     overflow-y: scroll;
 }
 
-.card{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 5px;
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
 }
+
 .content{
   display: flex;
   flex-direction: column;

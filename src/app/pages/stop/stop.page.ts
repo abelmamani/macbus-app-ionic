@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { LocationAccuracy } from '@awesome-cordova-plugins/location-accuracy/ngx';
 import { IonButton, IonContent, IonHeader, IonIcon, ModalController, NavController, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { arrowBackOutline } from 'ionicons/icons';
@@ -31,7 +30,7 @@ export class StopPage{
   updateSubscription!: Subscription | null;
   private busMarker!: L.Marker | null;
 
-  constructor(private stopService: StopService, private locationAccuracy: LocationAccuracy, private tripService: TripService, private locationService: LocationService, private navCtrl: NavController, private modalController: ModalController, private toastController: ToastController) {
+  constructor(private stopService: StopService, private tripService: TripService, private locationService: LocationService, private navCtrl: NavController, private modalController: ModalController, private toastController: ToastController) {
     addIcons({arrowBackOutline});
   }
 
@@ -61,7 +60,9 @@ export class StopPage{
       }).addTo(this.map);
      
       this.loadStops();
-      this.addUserMarker(location ? location : this.defaultLocation);
+      if(location){
+        this.addUserMarker(location);
+      }
     }
   }
   
@@ -134,7 +135,8 @@ export class StopPage{
       component: StopTimeComponent,
       componentProps: {
         stopId: stopId,
-        stopName: stopName
+        stopName: stopName,
+        isMap: true
       },
       initialBreakpoint: 0.3, 
     breakpoints: [0.3, 0.5, 1], 
