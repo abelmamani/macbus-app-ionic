@@ -24,8 +24,10 @@ export class StopPage{
   private map!: L.Map;
   private stops: Stop[] = [];
   private userMarker: L.CircleMarker | null = null;
-  private pulseEffect: any;
-  private defaultLocation: [number, number] = [-29.162033, -67.496040];
+  private pulseEffect:  ReturnType<typeof setInterval> | null = null;
+  private locationUpdateInterval:  ReturnType<typeof setInterval> | null = null;
+  private defauultLocation: [number, number] = [-29.162033, -67.496040];
+  private userLocation: [number, number] | null = null;
   tripUpdate!: TripUpdate | null;
   updateSubscription!: Subscription | null;
   private busMarker!: L.Marker | null;
@@ -45,8 +47,11 @@ export class StopPage{
   private async initMap(): Promise<void> {
     if (this.mapContainer && this.mapContainer.nativeElement) {
       const location: [number, number] | null = await this.locationService.getCurrentLocation();
+      if(location){
+        this.userLocation = location;
+      }
       this.map = L.map(this.mapContainer.nativeElement, {
-        center: location ? location : this.defaultLocation,
+        center: location ? location : this.defauultLocation,
         zoom: 15,
         zoomControl: false
       });
@@ -80,8 +85,30 @@ export class StopPage{
     }).addTo(this.map);
 
     this.startPulseEffect();
+    this.startUpdatingUserMarker();
   }
 
+  private startUpdatingUserMarker(): void {
+    this.locationUpdateInterval = setInterval(() => {
+      if (this.tripUpdate) {
+        this.removeUserMarker(); 
+      } else {
+        this.updateUserLocation();
+      }
+    }, 5000);
+  }
+  
+  private async updateUserLocation(): Promise<void> {
+    const newLocation: [number, number] | null = await this.locationService.getCurrentLocation();
+      if (newLocation) {
+        if (newLocation !== this.userLocation) {
+          this.userLocation = newLocation;
+          if (this.userMarker) {
+            this.userMarker.setLatLng(newLocation); 
+          }
+        }
+      }
+  }
   private startPulseEffect(): void {
     if (this.userMarker) {
       let growing = true;
@@ -98,6 +125,26 @@ export class StopPage{
 
         this.userMarker?.setRadius(size);
       }, 75);
+    }
+  }
+
+  private removeUserMarker(): void {
+
+    if (this.userMarker) {
+      if (this.map) {
+        this.map.removeLayer(this.userMarker);
+      }
+      this.userMarker = null; 
+    }
+  
+    if (this.locationUpdateInterval) {
+      clearInterval(this.locationUpdateInterval);
+      this.locationUpdateInterval = null;
+    }
+
+    if (this.pulseEffect) {
+      clearInterval(this.pulseEffect);
+      this.pulseEffect = null;
     }
   }
 
@@ -138,33 +185,30 @@ export class StopPage{
         stopName: stopName,
         isMap: true
       },
-      initialBreakpoint: 0.3, 
-    breakpoints: [0.3, 0.5, 1], 
-    backdropDismiss: true,
+      initialBreakpoint: 0.5, 
+    breakpoints: [0.5, 1], 
+    backdropDismiss: false,
     });
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        this.TripUpdateHandle(result.data.tripUpdate);
+        this.tripUpdate = result.data.tripUpdate;
+        this.updateBusMarker(this.tripUpdate!);
+        this.startTracking();
       }
     });
     return await modal.present();
   }
 
-  TripUpdateHandle(tripUpdate: TripUpdate){
-    this.tripUpdate = tripUpdate;
-    this.startTripUpdate();
-  }
 
-  startTripUpdate() {
+  startTracking() {
     if (this.tripUpdate) {
       this.updateSubscription = interval(15000).subscribe(() => {
-        this.getTripUpdate();
+        this.getBusLocation();
       });
-      this.getTripUpdate();
     }
   }
 
-  getTripUpdate() {
+  getBusLocation() {
     if (this.tripUpdate) {
       this.tripService.getTripUpdate(this.tripUpdate.id).subscribe({
         next: (res: TripUpdate) => {
@@ -173,7 +217,7 @@ export class StopPage{
         },
         error: (err) => {
           this.stopTripUpdate();
-          this.showToast(err.error.message ? err.error.message : "No se puede obtener la ubicación, inténtelo más tarde!");
+          this.showToast(err.error.message ? err.error.message : "Error al obtener la ubicación del colectivo, inténtelo más tarde!");
         }
       });
     }
@@ -185,6 +229,9 @@ export class StopPage{
     }
     this.tripUpdate = null; 
     this.removeBusMarker(); 
+    if(this.userLocation){
+      this.addUserMarker(this.userLocation);
+    }
   }
 
   updateBusMarker(tripUpdate: TripUpdate) {
@@ -203,7 +250,6 @@ export class StopPage{
       }).bindPopup(tripUpdate.route + " - " + getTimeAgo(tripUpdate.timestamp)).addTo(this.map);
     }
   }
-  
 
   removeBusMarker() {
     if (this.busMarker) {
@@ -217,6 +263,7 @@ export class StopPage{
       this.updateSubscription.unsubscribe(); 
       this.updateSubscription = null;
     }
+    this.removeUserMarker();
     if (this.map) {
       this.removeBusMarker(); 
       this.map.remove();

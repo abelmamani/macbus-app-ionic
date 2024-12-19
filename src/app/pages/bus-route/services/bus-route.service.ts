@@ -9,8 +9,8 @@ import { StopSequence } from '../models/stop.sequence.model';
   providedIn: 'root'
 })
 export class BusRouteService {
-  private apiUrl = "https://macbus-api-rest-macbus-projects.vercel.app/api/routes";
-  //private apiUrl = "http://localhost:3000/api/routes";
+  //private apiUrl = "https://macbus-api-rest-macbus-projects.vercel.app/api/routes";
+  private apiUrl = "http://localhost:3000/api/routes";
   constructor(private http: HttpClient) {}
   getBusRoutes():Observable<BusRoute[]>{
     return this.http.get<BusRoute[]>(this.apiUrl);

@@ -2,10 +2,9 @@
 
 .logo-title {
   font-family: 'UberMove', 'Roboto', sans-serif;
-  font-weight: 600; 
+  font-weight: 700; 
   font-size: 3rem;
   color: #000; 
-  letter-spacing: -0.02em;
 }
 
 .nav-options {
@@ -18,12 +17,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 5px;
 }
 
 .opcion{
   background: black;
   color: rgb(212, 199, 199);
   border-radius: 50%;
+  padding: 5px 15px;
 }
 
 ion-list-header {

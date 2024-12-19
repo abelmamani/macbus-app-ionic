@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { MenuController, ModalController, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { busOutline, locationOutline, openOutline } from 'ionicons/icons';
+import { busOutline, calendarOutline, closeOutline, locationOutline, openOutline } from 'ionicons/icons';
 import { Observable } from 'rxjs';
 import { PublicRoute } from 'src/app/models/routes.model';
 import { StopHistory } from 'src/app/models/stop.history.model';
@@ -24,7 +24,7 @@ export class HomePage  implements OnInit{
   private defaultLocation: [number, number] = [-29.162033, -67.496040];
   recentStops$!: Observable<StopHistory[]>;
   constructor(private stopHistoryService: StopHistoryService, private locationService: LocationService, private toastController: ToastController, private menuController: MenuController, private modalController: ModalController, private router: Router) {
-    addIcons({locationOutline, busOutline, openOutline});
+    addIcons({locationOutline, busOutline, openOutline, calendarOutline, closeOutline});
   }
 
   ngOnInit(): void {
@@ -37,11 +37,11 @@ export class HomePage  implements OnInit{
 
   async getStops(){
     const location: [number, number] | null = await this.locationService.getCurrentLocation();
-    if(location){
+    //if(location){
     this.router.navigate([PublicRoute.BUS_STOPS]);
-    }else{
-      this.showToast("Active su ubicacion.");
-    }
+    //}else{
+      //this.showToast("Active su ubicacion.");
+   // }
   }
 
   getRoutes(){

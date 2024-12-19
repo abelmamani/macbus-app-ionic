@@ -41,9 +41,15 @@
                     labelPlacement="floating"
                     placeholder="*****"
                     formControlName="password"
-                    type="password"
+                    [type]="showPassword ? 'text' : 'password'"
                     required>
                   </ion-input>
+                  <ion-button 
+                    fill="clear" 
+                    slot="end" 
+                    (click)="togglePasswordVisibility()">
+                    <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" color="medium"></ion-icon>
+                  </ion-button>
                 </ion-item>
                 <ion-note color="danger" *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
                   La contraseña es requerida
@@ -53,7 +59,7 @@
             <ion-button 
             type="submit" 
             class="btn">
-            Iniciar Sesión
+            Ingresar
           </ion-button>
           </form>
         </div>

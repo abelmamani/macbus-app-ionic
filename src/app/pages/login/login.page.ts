@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonNote, NavController, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { arrowBackOutline, lockClosedOutline, mailOutline } from 'ionicons/icons';
+import { arrowBackOutline, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline } from 'ionicons/icons';
 import { ResponseAuth } from 'src/app/models/response.auth.model';
 import { PublicRoute } from 'src/app/models/routes.model';
 import { AuthService } from 'src/app/services/auth.service';
@@ -17,12 +17,13 @@ import { AuthService } from 'src/app/services/auth.service';
   imports: [CommonModule, ReactiveFormsModule, RouterLink, IonHeader, IonContent, IonButton, IonIcon, IonCard, IonCardContent,IonCardHeader, IonCardSubtitle, IonCardTitle, IonList, IonItem, IonInput, IonLabel, IonNote]
 })
 export class LoginPage implements OnInit {
+  showPassword = false;
   loginForm: FormGroup = this.formBuilder.group({
     email: [undefined, [Validators.required, Validators.email]],
     password: [undefined, Validators.required]
   });
   constructor(private authService: AuthService, private formBuilder: FormBuilder, private router: Router, private navCtrl: NavController, private toastController: ToastController) {
-    addIcons({arrowBackOutline, lockClosedOutline, mailOutline});
+    addIcons({arrowBackOutline, lockClosedOutline, mailOutline, eyeOutline, eyeOffOutline});
   }
 
   ngOnInit() {
@@ -47,6 +48,10 @@ export class LoginPage implements OnInit {
 
   goBack() {
     this.navCtrl.back();
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   async showToast(msg: string) {
