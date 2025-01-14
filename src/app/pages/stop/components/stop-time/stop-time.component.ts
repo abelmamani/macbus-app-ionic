@@ -86,10 +86,10 @@ export class StopTimeComponent  implements OnInit {
   }
   
 
-  getTripUpdate(id: string) {
+  getTripUpdate(id: string, route: string,  distanceTraveled: Number) {
     this.tripService.getTripUpdate(id).subscribe({
       next: (res: TripUpdate) => {
-        this.modalController.dismiss({tripUpdate: res})
+        this.modalController.dismiss({tripUpdate: res, route: route, distanceTraveled: distanceTraveled})
         this.closeModal(); 
       },
       error: (err) => {

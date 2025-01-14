@@ -18,13 +18,15 @@ import { Shape } from './models/shape.model';
 import { StopSequence } from './models/stop.sequence.model';
 import { BusRouteService } from './services/bus-route.service';
 import { EPrivilege } from 'src/app/models/privilege.enum';
+import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
 
 @Component({
   selector: 'app-bus-route',
   templateUrl: './bus-route.page.html',
   styleUrls: ['./bus-route.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonHeader, IonContent, IonButton, IonIcon, IonButton, IonToolbar, IonTitle, IonButtons, IonList, IonItem, IonAvatar, IonBackButton, IonLabel, IonCard, IonListHeader]
+  imports: [CommonModule, IonHeader, IonContent, IonButton, IonIcon, IonButton, IonToolbar, IonTitle, IonButtons, IonList, IonItem, IonAvatar, IonBackButton, IonLabel, IonCard, IonListHeader],
+  providers: [Insomnia]
 })
     
 export class BusRoutePage{
@@ -45,7 +47,11 @@ export class BusRoutePage{
   isFinishEnabled = false;
   private defaultLocation: [number, number] = [-29.300575, -67.504712];
 
-  constructor(private busRouteService: BusRouteService, private authService: AuthService, private tripUpdateService: TripUpdateService, private tripServcie: TripService, private locationService: LocationService, private modalController: ModalController, private toastController: ToastController, private navCtrl: NavController) {
+  constructor(private busRouteService: BusRouteService, private authService: AuthService, private tripUpdateService: TripUpdateService, private tripServcie: TripService, private locationService: LocationService, private modalController: ModalController, private toastController: ToastController, private navCtrl: NavController, private insomnia: Insomnia) {
+    this.insomnia.keepAwake().then(
+      () => console.log('success'),
+      () => console.log('error')
+    );
     addIcons({arrowBackOutline, busOutline, openOutline, timeOutline, locationOutline, refreshOutline, stopCircleOutline});
     this.authService.getIdentitySubject().subscribe((identity: Identity | null) => {
       this.identity.set(identity ? identity : null);
@@ -64,15 +70,16 @@ export class BusRoutePage{
         zoom: 12,
         zoomControl: false
       });
-       /*
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      
+    /*L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
     */
-    L.tileLayer('https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=80b8814ea749431d94c7899f1454d687', {
-      attribution: '&copy; <a href="https://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(this.map);
-    this.getBusRoutes();
+    
+    L.tileLayer('https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=78ebc0ed1b2b42319546eea384f783ce', {
+    attribution: '&copy; <a href="https://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(this.map);
+  
+    this.getBusRoutes(); 
     }
   }
   getBusRoutes(){
@@ -303,6 +310,9 @@ export class BusRoutePage{
     if (this.map) {
       this.map.remove();
     }
+    this.insomnia.allowSleepAgain().then(
+      () => console.log('success'),
+      () => console.log('error'));
   }
 
   isConductor(): boolean{

@@ -47,19 +47,19 @@
           fill="clear"
           size="small"
           [disabled]="st.tripStatus !== 'RUNNING'"
-          (click)="getTripUpdate(st.trip)"
+          (click)="getTripUpdate(st.trip, st.route, st.distanceTraveled)"
         >
           <ion-icon name="open-outline" color="dark" size="small"></ion-icon>
         </ion-button>
       </div>
     </div>
-    <div *ngIf="isLoading" class="loading">
+    <div *ngIf="isLoading" class="description">
       <ion-spinner name="crescent"></ion-spinner>
       <p>Cargando...</p>
     </div>
   
-    <div *ngIf="stopTimes.length === 0 && !isLoading">
-      <ion-title>Sin arribos para {{selectedDate ? showDate(selectedDate): 'Hoy'}}</ion-title>
+    <div *ngIf="stopTimes.length === 0 && !isLoading" class="description">
+      <p>Sin arribos para {{selectedDate ? showDate(selectedDate): 'Hoy'}}</p>
     </div>
   </ion-list>
 

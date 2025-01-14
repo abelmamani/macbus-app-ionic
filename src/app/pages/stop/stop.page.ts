@@ -12,6 +12,8 @@ import { TripService } from '../bus-route/components/trip/services/trip.service'
 import { StopTimeComponent } from './components/stop-time/stop-time.component';
 import { Stop } from './models/stop.model';
 import { StopService } from './services/stop.service';
+import { Shape } from '../bus-route/models/shape.model';
+import { BusRouteService } from '../bus-route/services/bus-route.service';
 @Component({
   selector: 'app-stop',
   templateUrl: './stop.page.html',
@@ -23,6 +25,8 @@ export class StopPage{
   @ViewChild('map', { static: false }) mapContainer!: ElementRef;
   private map!: L.Map;
   private stops: Stop[] = [];
+  private shapes: Shape[] = [];
+  private currentPolyline : L.Polyline | null = null;
   private userMarker: L.CircleMarker | null = null;
   private pulseEffect:  ReturnType<typeof setInterval> | null = null;
   private locationUpdateInterval:  ReturnType<typeof setInterval> | null = null;
@@ -32,7 +36,7 @@ export class StopPage{
   updateSubscription!: Subscription | null;
   private busMarker!: L.Marker | null;
 
-  constructor(private stopService: StopService, private tripService: TripService, private locationService: LocationService, private navCtrl: NavController, private modalController: ModalController, private toastController: ToastController) {
+  constructor(private stopService: StopService, private busRouteService: BusRouteService, private tripService: TripService, private locationService: LocationService, private navCtrl: NavController, private modalController: ModalController, private toastController: ToastController) {
     addIcons({arrowBackOutline});
   }
 
@@ -59,8 +63,8 @@ export class StopPage{
        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(this.map);
-      */
-      L.tileLayer('https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=80b8814ea749431d94c7899f1454d687', {
+    */
+      L.tileLayer('https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=78ebc0ed1b2b42319546eea384f783ce', {
         attribution: '&copy; <a href="https://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(this.map);
      
@@ -169,7 +173,9 @@ export class StopPage{
           fillColor: "white",
           fillOpacity: 0.7,
           weight: 2
-        }).addTo(this.map).on('click', () => {this.getStopTimes(stop.id, stop.name)});
+        }).addTo(this.map).on('click', () => {
+          this.getStopTimes(stop.id, stop.name)
+        }).bindPopup(`<b>${stop.name}</b>`);
       });
     }
   }
@@ -187,17 +193,44 @@ export class StopPage{
       },
       initialBreakpoint: 0.5, 
     breakpoints: [0.5, 1], 
-    backdropDismiss: false,
+    backdropDismiss: true,
     });
     modal.onDidDismiss().then((result) => {
       if (result.data) {
         this.tripUpdate = result.data.tripUpdate;
         this.updateBusMarker(this.tripUpdate!);
+        this.loadShape(result.data.route, result.data.distanceTraveled);
         this.startTracking();
       }
     });
     return await modal.present();
   }
+
+  private loadShape(route: string, distanceTraveled: number): void {
+    this.busRouteService.getShapesByRouteAndDistance(route, distanceTraveled).subscribe({
+      next: (res: Shape[]) => {
+        this.shapes = res;
+        this.addShapeToMap();
+      },
+      error: (error) => {
+        this.showToast("No se puedo obtener la forma de recorrido.");
+      }   
+    });
+  }
+
+    private addShapeToMap(): void {
+      if (this.map && this.shapes.length > 0) {
+        const latLngs: L.LatLngExpression[] = this.shapes.map(shape => [shape.latitude, shape.longitude] as L.LatLngExpression);
+        const polyline: L.Polyline = L.polyline(latLngs, {
+          color: 'black',    
+          weight: 2,         
+          opacity: 0.7,       
+          dashArray: '10, 10'  
+        }).addTo(this.map);
+        this.currentPolyline = polyline;
+        //this.map.fitBounds(polyline.getBounds());
+      }
+    }
 
 
   startTracking() {
@@ -231,6 +264,10 @@ export class StopPage{
     this.removeBusMarker(); 
     if(this.userLocation){
       this.addUserMarker(this.userLocation);
+    }
+    if (this.currentPolyline) {
+      this.map?.removeLayer(this.currentPolyline);
+      this.currentPolyline = null;
     }
   }
 

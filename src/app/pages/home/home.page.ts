@@ -37,11 +37,11 @@ export class HomePage  implements OnInit{
 
   async getStops(){
     const location: [number, number] | null = await this.locationService.getCurrentLocation();
-    //if(location){
+    if(location){
     this.router.navigate([PublicRoute.BUS_STOPS]);
-    //}else{
-      //this.showToast("Active su ubicacion.");
-   // }
+    }else{
+      this.showToast("Active su ubicacion.");
+    }
   }
 
   getRoutes(){
@@ -56,8 +56,8 @@ export class HomePage  implements OnInit{
         stopName: stopName,
         isMap: false
       },
-      initialBreakpoint: 0.3, 
-    breakpoints: [0.3, 0.5, 1], 
+      initialBreakpoint: 0.5, 
+    breakpoints: [0.5, 1], 
     backdropDismiss: true,
     });
     
