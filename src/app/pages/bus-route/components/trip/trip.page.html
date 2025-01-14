@@ -17,5 +17,14 @@
           <ion-icon name="send" color="dark" size="small"></ion-icon>
         </ion-button>
     </ion-card>
+
+    <div *ngIf="isLoading" class="description">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando...</p>
+    </div>
+  
+    <div *ngIf="trips.length === 0 && !isLoading" class="description">
+      <p>No hay viaje disponibles</p>
+    </div>
   </ion-list>
 </ion-content>

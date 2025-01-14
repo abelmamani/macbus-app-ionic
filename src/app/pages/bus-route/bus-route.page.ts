@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, signal, ViewChild } from '@angular/core';
-import { IonAvatar, IonBackButton, IonButton, IonButtons, IonCard, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonTitle, IonToolbar, ModalController, NavController, ToastController } from '@ionic/angular/standalone';
+import { IonAvatar, IonBackButton, IonButton, IonButtons, IonCard, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonTitle, IonToolbar, ModalController, NavController, ToastController, IonSpinner} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { arrowBackOutline, busOutline, locationOutline, openOutline, refreshOutline, stopCircleOutline, timeOutline } from 'ionicons/icons';
+import { arrowBackOutline, busOutline, locationOutline, openOutline, refreshOutline, stopCircleOutline, timeOutline} from 'ionicons/icons';
 import * as L from 'leaflet';
 import { Identity } from 'src/app/models/identity.model';
 import { AuthService } from 'src/app/services/auth.service';
@@ -25,7 +25,7 @@ import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
   templateUrl: './bus-route.page.html',
   styleUrls: ['./bus-route.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonHeader, IonContent, IonButton, IonIcon, IonButton, IonToolbar, IonTitle, IonButtons, IonList, IonItem, IonAvatar, IonBackButton, IonLabel, IonCard, IonListHeader],
+  imports: [CommonModule, IonHeader, IonContent, IonButton, IonIcon, IonButton, IonToolbar, IonTitle, IonButtons, IonList, IonItem, IonAvatar, IonBackButton, IonLabel, IonCard, IonListHeader, IonSpinner],
   providers: [Insomnia]
 })
     
@@ -44,6 +44,7 @@ export class BusRoutePage{
   tripUpdate!: TripUpdate | null;
   locationInterval: any;
   isRestartEnabled = false;
+  isLoading: boolean = true;
   isFinishEnabled = false;
   private defaultLocation: [number, number] = [-29.300575, -67.504712];
 
@@ -83,11 +84,16 @@ export class BusRoutePage{
     }
   }
   getBusRoutes(){
+    this.isLoading = true;
     this.busRouteService.getBusRoutes().subscribe({
       next: (res: BusRoute[]) => {
         this.busRoutes = res;
+        this.isLoading = false;
       },
-      error: () => { this.showToast("No se pudo obtener las líneas"); }
+      error: () => { 
+        this.showToast("No se pudo obtener las líneas");
+        this.isLoading = false;
+       }
     });
   }
 

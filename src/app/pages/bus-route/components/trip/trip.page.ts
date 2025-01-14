@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { LocationAccuracy } from '@awesome-cordova-plugins/location-accuracy/ngx';
-import { IonButton, IonButtons, IonCard, IonContent, IonHeader, IonIcon, IonLabel, IonList, IonTitle, IonToolbar, ModalController, ToastController } from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonCard, IonContent, IonHeader, IonIcon, IonLabel, IonList, IonTitle, IonToolbar, ModalController, ToastController, IonSpinner} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { send } from 'ionicons/icons';
 import { LocationService } from 'src/app/services/location.service';
@@ -15,11 +15,12 @@ import { TripService } from './services/trip.service';
   templateUrl: './trip.page.html',
   styleUrls: ['./trip.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton, IonIcon, IonList, IonCard, IonLabel]
+  imports: [CommonModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton, IonIcon, IonList, IonCard, IonLabel, IonSpinner]
 })
 export class TripPage implements OnInit{
   @Input() busRouteName!: string;
   trips: Trip[] = [];
+  isLoading: boolean = true;
   tripUpdate!: TripUpdate;
   defaultLocation: [number, number] = [-29.176179, -67.4932864];
   constructor(private tripService: TripService, private tripUpdateService: TripUpdateService, private locationService: LocationService, private modalController: ModalController, private toastController: ToastController,  private locationAccuracy: LocationAccuracy) {
@@ -31,11 +32,16 @@ export class TripPage implements OnInit{
   }
 
   getTrips(){
+    this.isLoading = true;
     this.tripService.getTripsByRoute(this.busRouteName).subscribe({
       next: (res: Trip[]) => {
         this.trips = res;
+        this.isLoading = false;
       },
-      error: (err) => {this.showToast(err.error.message ? err.error.message : "No se pudo obtener los viajes");}
+      error: (err) => {
+        this.showToast(err.error.message ? err.error.message : "No se pudo obtener los viajes");
+        this.isLoading = false;
+      }
     });
   }
 

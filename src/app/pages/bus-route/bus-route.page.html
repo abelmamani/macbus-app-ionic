@@ -40,6 +40,14 @@
             </ion-button>
           </div>
         </div>
+        <div *ngIf="isLoading" class="description">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>Cargando...</p>
+        </div>
+      
+        <div *ngIf="busRoutes.length === 0 && !isLoading" class="description">
+          <p>No hay lineas disponibles</p>
+        </div>
       </ion-list>
 
       <ion-list *ngIf="selectedItem">
