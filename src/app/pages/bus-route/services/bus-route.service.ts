@@ -9,7 +9,7 @@ import { StopSequence } from '../models/stop.sequence.model';
   providedIn: 'root'
 })
 export class BusRouteService {
-  private apiUrl = "macbus-api-rest-sigma.vercel.app/api/routes";
+  private apiUrl = "https://macbus-api-rest-sigma.vercel.app/api/routes";
   //private apiUrl = "http://localhost:3000/api/routes";
   constructor(private http: HttpClient) {}
   getBusRoutes():Observable<BusRoute[]>{

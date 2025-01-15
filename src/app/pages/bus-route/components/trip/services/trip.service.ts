@@ -9,7 +9,7 @@ import { TripUpdate } from '../models/trip.update.model';
 })
 
 export class TripService {
-  private apiUrl = "macbus-api-rest-sigma.vercel.app/api/trips";
+  private apiUrl = "https://macbus-api-rest-sigma.vercel.app/api/trips";
   //private apiUrl = "http://localhost:3000/api/trips";
   constructor(private http: HttpClient) {}
   

@@ -11,7 +11,7 @@ import { ResponseAuth } from '../models/response.auth.model';
 })
 export class AuthService {
   //private url: string = 'http://localhost:3000/api/users';
-  private url = "macbus-api-rest-sigma.vercel.app/api/users";
+  private url = "https://macbus-api-rest-sigma.vercel.app/api/users";
   private identitySubject = new BehaviorSubject<Identity | null>(this.getIdentity());
  
   constructor(private http: HttpClient) {}

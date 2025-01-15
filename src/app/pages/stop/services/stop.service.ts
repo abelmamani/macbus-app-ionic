@@ -8,7 +8,7 @@ import { StopTime } from '../models/StopTime.model';
   providedIn: 'root'
 })
 export class StopService {
-  private apiUrl = "macbus-api-rest-sigma.vercel.app/api/stops";
+  private apiUrl = "https://macbus-api-rest-sigma.vercel.app/api/stops";
   //private apiUrl = "http://localhost:3000/api/stops";
   constructor(private http: HttpClient) {}
   getStops():Observable<Stop[]>{
