@@ -108,8 +108,19 @@ export class StopTimeComponent  implements OnInit {
     };
     return parsedDate.toLocaleDateString('es-ES', options);
   }
-  
-  formatArrivalTime(arrivalTime: string): string {
+
+  formatArrivalTime(timeString: string): string {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    if (hours > 23) {
+      const adjustedHours = hours % 24;
+      const formattedHours = adjustedHours.toString().padStart(2, '0');
+      const formattedMinutes = minutes.toString().padStart(2, '0');
+      return `${formattedHours}:${formattedMinutes}`;
+    }
+    return timeString;
+  }
+
+  formatArrivalTimeAsString(arrivalTime: string): string {
     //const now = toZonedTime(new Date(), 'America/Argentina/Buenos_Aires');
     const now = new Date();
     const [hours, minutes] = arrivalTime.split(':').map(Number);

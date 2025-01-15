@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, signal, ViewChild } from '@angular/core';
-import { IonAvatar, IonBackButton, IonButton, IonButtons, IonCard, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonTitle, IonToolbar, ModalController, NavController, ToastController, IonSpinner} from '@ionic/angular/standalone';
+import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
+import { IonButton, IonCard, IonContent, IonHeader, IonIcon, IonList, IonListHeader, IonSpinner, ModalController, NavController, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { arrowBackOutline, busOutline, locationOutline, openOutline, refreshOutline, stopCircleOutline, timeOutline} from 'ionicons/icons';
+import { arrowBackOutline, busOutline, locationOutline, openOutline, refreshOutline, stopCircleOutline, timeOutline } from 'ionicons/icons';
 import * as L from 'leaflet';
 import { Identity } from 'src/app/models/identity.model';
+import { EPrivilege } from 'src/app/models/privilege.enum';
 import { AuthService } from 'src/app/services/auth.service';
 import { LocationService } from 'src/app/services/location.service';
 import { TripUpdateService } from 'src/app/services/trip.update.service';
@@ -17,15 +19,13 @@ import { BusRoute } from './models/bus.route.model';
 import { Shape } from './models/shape.model';
 import { StopSequence } from './models/stop.sequence.model';
 import { BusRouteService } from './services/bus-route.service';
-import { EPrivilege } from 'src/app/models/privilege.enum';
-import { Insomnia } from '@awesome-cordova-plugins/insomnia/ngx';
 
 @Component({
   selector: 'app-bus-route',
   templateUrl: './bus-route.page.html',
   styleUrls: ['./bus-route.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonHeader, IonContent, IonButton, IonIcon, IonButton, IonToolbar, IonTitle, IonButtons, IonList, IonItem, IonAvatar, IonBackButton, IonLabel, IonCard, IonListHeader, IonSpinner],
+  imports: [CommonModule, IonHeader, IonContent, IonButton, IonIcon, IonButton, IonList, IonCard, IonListHeader, IonSpinner],
   providers: [Insomnia]
 })
     
