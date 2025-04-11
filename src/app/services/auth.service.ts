@@ -5,32 +5,37 @@ import { Identity } from '../models/identity.model';
 import { EPrivilege } from '../models/privilege.enum';
 import { RequestLogin } from '../models/request.login.model';
 import { ResponseAuth } from '../models/response.auth.model';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  //private url: string = 'http://localhost:3000/api/users';
-  private url = "https://macbus-api-rest-sigma.vercel.app/api/users";
-  private identitySubject = new BehaviorSubject<Identity | null>(this.getIdentity());
- 
+  private apiUrl = environment.apiUrl + '/users';
+  private identitySubject = new BehaviorSubject<Identity | null>(
+    this.getIdentity()
+  );
+
   constructor(private http: HttpClient) {}
 
   signin(requestLogin: RequestLogin): Observable<ResponseAuth> {
-    return this.http.post<ResponseAuth>(`${this.url}/login`, requestLogin);
+    return this.http.post<ResponseAuth>(`${this.apiUrl}/login`, requestLogin);
   }
 
-  isLogged(){
-    return !!localStorage.getItem('token') && !!localStorage.getItem('identity');
+  isLogged() {
+    return (
+      !!localStorage.getItem('token') && !!localStorage.getItem('identity')
+    );
   }
 
-  getToken(){return this.isLogged() ? localStorage.getItem('token') : null;
+  getToken() {
+    return this.isLogged() ? localStorage.getItem('token') : null;
   }
 
   getIdentity(): Identity | null {
-    if(this.isLogged()){
-      const identityString= localStorage.getItem("identity");
-      return  identityString ? JSON.parse(identityString) : null;
+    if (this.isLogged()) {
+      const identityString = localStorage.getItem('identity');
+      return identityString ? JSON.parse(identityString) : null;
     }
     return null;
   }
@@ -49,7 +54,11 @@ export class AuthService {
 
   hasAuthority(requiredPrivilege: EPrivilege): boolean {
     const identity: Identity | null = this.getIdentity();
-    return identity ? identity.role.privileges.some(privilege => privilege.name ===  requiredPrivilege) : false;
+    return identity
+      ? identity.role.privileges.some(
+          (privilege) => privilege.name === requiredPrivilege
+        )
+      : false;
   }
 
   getIdentitySubject(): Observable<Identity | null> {

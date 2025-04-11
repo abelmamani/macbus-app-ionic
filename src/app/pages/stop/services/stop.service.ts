@@ -3,15 +3,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Stop } from '../models/stop.model';
 import { StopTime } from '../models/StopTime.model';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StopService {
-  private apiUrl = "https://macbus-api-rest-sigma.vercel.app/api/stops";
-  //private apiUrl = "http://localhost:3000/api/stops";
+  private apiUrl = environment.apiUrl + '/stops';
+
   constructor(private http: HttpClient) {}
-  getStops():Observable<Stop[]>{
+  getStops(): Observable<Stop[]> {
     return this.http.get<Stop[]>(this.apiUrl);
   }
 
@@ -19,6 +20,8 @@ export class StopService {
     return this.http.get<StopTime[]>(`${this.apiUrl}/stop_times/${name}`);
   }
   getStopTimesBydate(name: string, date: string): Observable<StopTime[]> {
-    return this.http.get<StopTime[]>(`${this.apiUrl}/stop_times/${name}/${date}`);
+    return this.http.get<StopTime[]>(
+      `${this.apiUrl}/stop_times/${name}/${date}`
+    );
   }
 }
