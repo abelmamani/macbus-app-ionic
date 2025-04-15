@@ -7,9 +7,7 @@ Aplicación móvil para consulta y seguimiento en tiempo real del transporte pú
 - Visualización de la posición actual de los colectivos.
 
 ![Home screen](img/home.jpeg)
-![Stop screen](img/st.jpeg)
-![Route screen](img/routes.jpeg)
-
+<img align="right" width="100" height="300" src="img/st.jpeg">
 
 ## Tecnologías utilizadas
 
