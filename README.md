@@ -6,8 +6,11 @@ Aplicación móvil para consulta y seguimiento en tiempo real del transporte pú
 - Búsqueda de horarios por fecha específica.
 - Visualización de la posición actual de los colectivos.
 
-![Home screen](img/home.jpeg)
-<img align="right" width="100" height="300" src="img/st.jpeg">
+<p align="center">
+  <img src="img/home.jpeg" width="30%" alt="Home">
+  <img src="img/st.jpeg" width="30%" alt="Stops">  
+  <img src="img/routes.jpeg" width="30%" alt="Routes">
+</p>
 
 ## Tecnologías utilizadas
 
