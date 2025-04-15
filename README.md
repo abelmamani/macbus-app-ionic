@@ -6,6 +6,11 @@ Aplicación móvil para consulta y seguimiento en tiempo real del transporte pú
 - Búsqueda de horarios por fecha específica.
 - Visualización de la posición actual de los colectivos.
 
+![Home screen](img/home.jpeg)
+![Stop screen](img/st.jpeg)
+![Route screen](img/routes.jpeg)
+
+
 ## Tecnologías utilizadas
 
 - **Ionic 7**: Plataforma para desarrollo móvil híbrido
