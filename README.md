@@ -33,7 +33,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes requisitos en t
 ### 1. Clona el repositorio:
 
 ```bash
-git clone https://gitlab.com/macbus-project/macbus-app.git
+git clone https://github.com/abelmamani/macbus-app-ionic.git
 ```
 
 ### 2.  Instalar dependencias
